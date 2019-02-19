@@ -22,7 +22,6 @@ namespace example
     {
 		LoadScene(scene_content_xml);
 
-
 		//meshes.push_back({ "../../assets/meshes/tree1.obj", {1.8f,1,-10 }, 1,{ 0,120,0 } });
 		//meshes.push_back({ "../../assets/sphere.obj",{ 1,0,-10 }, 1 });
 		//meshes.push_back({ "../../assets/meshes/sphere1.obj",{ 1,0,-10 }, 1, {120,0,0} });

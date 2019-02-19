@@ -45,7 +45,6 @@ namespace example
 
 		for (size_t index = 0, vertex_counter = 0; index < number_of_vertices; index++, vertex_counter += 3)
 		{
-			
 			original_vertices[index] = Vertex({ vertices[vertex_counter],vertices[vertex_counter + 1],vertices[vertex_counter + 2],1 });
 		}
 
@@ -81,7 +80,7 @@ namespace example
 			//original_colors[index].set(200 * intensity, 185 * intensity, 155 * intensity);
 			//original_colors[index].set (colors[color_counter], colors[color_counter+1], colors[color_counter+2]);
 			original_colors[index]= color.data.value * intensity;
-
+			original_normals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2] });
 		}
 
 		// Triangle data
@@ -93,23 +92,22 @@ namespace example
 		original_indices.resize(number_of_triangles * 3);
 
 		Index_Buffer::iterator indices_iterator = original_indices.begin();
-
+		
 		for (size_t triangle_index = 0, triangle_counter = 0; triangle_index < number_of_triangles; triangle_index++, triangle_counter += 3)
 		{
 			*indices_iterator++ = triangles.indices[triangle_counter + 0].vertex_index;
 			*indices_iterator++ = triangles.indices[triangle_counter + 1].vertex_index;
 			*indices_iterator++ = triangles.indices[triangle_counter + 2].vertex_index;
 		}
-
 	}
 
 	void Mesh::Update(std::shared_ptr< Camera > activeCamera)
 	{
-		/*float angle = 0.f;
-		angle += 0.025f;*/
+		static float angle = 0.f;
+		angle += 0.1f;
 
 		//rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
-		//rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(0.1f);
+		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
 
 		// Creación de la matriz de transformación unificada:
 		//std::cout << translation.operator const toolkit::Matrix<4U, 4U, float> &[0];
@@ -149,10 +147,11 @@ namespace example
 		{
 			if (Scene::is_frontface(transformed_vertices.data(), indices))
 			{
-				//auto intensity = original_normals[*indices][0] * rasterizer.light.position[0] + original_normals[*indices][1] * rasterizer.light.position[1] + original_normals[*indices][2] * rasterizer.light.position[2];//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
+				//auto intensity = original_normals[*indices][0] * 1 + original_normals[*indices][1] * 0 + original_normals[*indices][2] * 0;//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
 				//if (intensity < 0)  intensity = 0;
-				// Se establece el color del polígono a partir del color de su primer vértice:
-			//	original_colors[*indices].set(155 * intensity, 155 * intensity, 155 * intensity);// *= intensity;
+				//// Se establece el color del polígono a partir del color de su primer vértice:
+				//original_colors[*indices].set(255 * intensity, 255 * intensity, 255 * intensity);
+				//original_colors[*indices].set(original_colors[*indices].data.component.a * intensity, original_colors[*indices].data.component.b * 0.9f, 155 * intensity);// *= intensity;
 				rasterizer.set_color(original_colors[*indices]);
 				// Se rellena el polígono:
 				rasterizer.fill_convex_polygon_z_buffer(display_vertices.data(), indices, indices + 3);

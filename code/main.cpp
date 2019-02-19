@@ -19,7 +19,7 @@ int main ()
     Scene   scene  (window_width, window_height, "../../assets/scene.xml");
 
     // Initialization:
-    window.setVerticalSyncEnabled (true);
+    window.setVerticalSyncEnabled (false);
 
     glDisable (GL_BLEND);
     glDisable (GL_DITHER);

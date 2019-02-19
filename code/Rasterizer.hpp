@@ -48,8 +48,6 @@ namespace example
 
 		Color clear_color = {160, 206, 235};
 
-	
-
     public:
 
         Rasterizer(Color_Buffer & target, Light & _light) 

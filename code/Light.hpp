@@ -19,8 +19,8 @@ namespace example
 
 	public:
 
-		Light() : position({ 1,0,0 }), color({ 255,255,0 }) {};
-		//Vertex	_position
+		Light() : position({ 1,1,0 }), color({ 255,255,0 }) {};
+	
 		Vertex				position;
 		Color				color;
 
