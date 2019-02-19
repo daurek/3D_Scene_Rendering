@@ -25,6 +25,8 @@ namespace example
 	using toolkit::Scaling3f;
 	using toolkit::Transformation3f;
 
+	class Camera;
+
 	class Mesh
 	{
 		private:
@@ -36,15 +38,15 @@ namespace example
 			typedef vector< int    >      Index_Buffer;
 			typedef vector< Color  >      Vertex_Colors;
 
-
 		public:
 
 			Mesh(){}
+
 			Mesh(const std::string & obj_file_path, Translation3f position, Scaling3f scale, Color color);
 
-			void Update();
+			void Update(std::shared_ptr< Camera > activeCamera);
 
-			void Render(Rasterizer< Color_Buffer > & rasterizer);
+			void Render(Rasterizer< Color_Buffer > & rasterizer, std::shared_ptr< Camera > activeCamera);
 
 			// Mesh data
 			Vertex_Buffer     original_vertices;

@@ -1,17 +1,9 @@
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
- *                                                                             *
- *  Started by Ángel on october of 2013                                        *
- *                                                                             *
- *  This is free software released into the public domain.                     *
- *                                                                             *
- *  angel.rodriguez@esne.edu                                                   *
- *                                                                             *
-\* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-#include "View.hpp"
+// Libraries
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
+
+// Project
+#include "Scene.hpp"
 
 
 using namespace sf;
@@ -22,10 +14,9 @@ static const size_t window_height = 600;
 
 int main ()
 {
-    // Create the window and the view that will be shown within the window:
-
-    Window window(VideoMode(window_width, window_height), "Z-Buffer", Style::Titlebar | Style::Close, ContextSettings(32));
-    View   view  (window_width, window_height);
+    // Create the window and the scene that will be shown within the window:
+    Window window(VideoMode(window_width, window_height), "3D Scene Render", Style::Titlebar | Style::Close, ContextSettings(32));
+    Scene   scene  (window_width, window_height, "../../assets/scene.xml");
 
     // Initialization:
     window.setVerticalSyncEnabled (true);
@@ -56,13 +47,43 @@ int main ()
             {
                 running = false;
             }
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+			{
+				scene.camera->translation.add(0.5f, 0, 0);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+			{
+				scene.camera->translation.add(-0.5f, 0, 0);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+			{
+				scene.camera->translation.add(0, 0, -5.f);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+			{
+				scene.camera->translation.add(0,0, 5.f);
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+			{
+				scene.camera->translation.add(0, 1, 0);
+			}
+	
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+			{
+				scene.camera->translation.add(0, -1, 0);
+			}
         }
 
         // Update the view:
-        view.Update ();
+        scene.Update ();
 
         // Repaint the view:
-        view.Render ();
+        scene.Render ();
 
         // Swap the OpenGL buffers:
         window.display ();
@@ -70,6 +91,5 @@ int main ()
     while (running);
 
     // Close the application:
-
     return (EXIT_SUCCESS);
 }

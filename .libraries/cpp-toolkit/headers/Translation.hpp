@@ -115,6 +115,13 @@
                 matrix[2][3] = displacement_z;
             }
 
+			void add(const Numeric_Type & displacement_x, const Numeric_Type & displacement_y, const Numeric_Type & displacement_z) 
+			{
+				matrix[0][3] += displacement_x;
+				matrix[1][3] += displacement_y;
+				matrix[2][3] += displacement_z;
+			}
+
         };
 
         typedef Translation< 2, int    > Translation2i;

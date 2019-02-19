@@ -63,6 +63,8 @@
                 matrix[1][0] = sin; matrix[1][1] =  cos;
             }
 
+			
+
         };
 
         template< typename NUMERIC_TYPE >
@@ -102,7 +104,6 @@
 
             template< Type TYPE >
             void set (const Numeric_Type & angle);
-
         };
 
         #define SPECIALIZE_ROTATION_3_SET_AROUND_THE_X_AXIS(NUMERIC_TYPE) \

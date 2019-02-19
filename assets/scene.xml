@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<scene>
+
+	<meshes>
+    <mesh id="sphere">
+      <path>sphere1.obj</path>
+      <position>
+          <x>1</x>
+          <y>0</y>
+          <z>-10</z>
+      </position>
+      <rotation>
+          <x>0</x>
+          <y>0</y>
+          <z>0</z>
+      </rotation>
+      <scale>
+          <x>2</x>
+          <y>2</y>
+          <z>2</z>
+      </scale>
+      <color>
+        <red>120</red>
+        <green>0</green>
+        <blue>0</blue>
+      </color>
+    </mesh>
+	</meshes>
+
+</scene>

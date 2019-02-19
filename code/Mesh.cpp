@@ -11,11 +11,12 @@
 #include "Matrix.hpp"
 
 // Project
-#include "View.hpp"
+#include "Scene.hpp"
+#include "Camera.hpp"
 
 namespace example
 {
-	Mesh::Mesh(const std::string & obj_file_path, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale)
+	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale)
 	{
 		tinyobj::attrib_t					attributes;
 		std::vector< tinyobj::shape_t    >	shapes;
@@ -23,9 +24,9 @@ namespace example
 		std::string warn;
 		std::string error;
 
-		std::cout << "\n Loading " << obj_file_path << " ... \n";
+		std::cout << "\n	Loading " << objFilePath << " ... \n";
 
-		if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warn, &error, obj_file_path.c_str()))
+		if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warn, &error, objFilePath.c_str()))
 		{
 			std::cout << "There is no obj"; return;
 		}
@@ -102,21 +103,20 @@ namespace example
 
 	}
 
-	void Mesh::Update()
+	void Mesh::Update(std::shared_ptr< Camera > activeCamera)
 	{
 		/*float angle = 0.f;
-
 		angle += 0.025f;*/
 
 		//rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
 		//rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(0.1f);
 
 		// Creación de la matriz de transformación unificada:
-		//transformation = projection * translation * rotation_x * rotation_y * scaling;
-
-
+		//std::cout << translation.operator const toolkit::Matrix<4U, 4U, float> &[0];
+		//translation.set(1)
+		//translation.set(translation[0] + 1,1,1);
+		transformation = activeCamera->projection * translation * rotation_x * rotation_y * scaling;
 		// Se transforman todos los vértices usando la matriz de transformación resultante:
-
 		for (size_t index = 0, number_of_vertices = original_vertices.size(); index < number_of_vertices; index++)
 		{
 			// Se multiplican todos los vértices originales con la matriz de transformación y
@@ -136,12 +136,18 @@ namespace example
 		}
 	}
 
-	bool drawn = false;
-	void Mesh::Render(Rasterizer< Color_Buffer > & rasterizer)
+	void Mesh::Render(Rasterizer< Color_Buffer > & rasterizer, std::shared_ptr< Camera > activeCamera)
 	{
+		Matrix44f cameraTransform = Matrix44f(activeCamera->getTransformation());
+
+		for (size_t index = 0, number_of_vertices = transformed_vertices.size(); index < number_of_vertices; index++)
+		{
+			display_vertices[index] = Point4i(cameraTransform * Matrix41f(transformed_vertices[index]));
+		}
+
 		for (int * indices = original_indices.data(), *end = indices + original_indices.size(); indices < end; indices += 3)
 		{
-			if (View::is_frontface(transformed_vertices.data(), indices))
+			if (Scene::is_frontface(transformed_vertices.data(), indices))
 			{
 				//auto intensity = original_normals[*indices][0] * rasterizer.light.position[0] + original_normals[*indices][1] * rasterizer.light.position[1] + original_normals[*indices][2] * rasterizer.light.position[2];//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
 				//if (intensity < 0)  intensity = 0;
@@ -153,6 +159,5 @@ namespace example
 				//if(!drawn) std::cout << display_vertices[*indices][1] << std::endl;
 			}
 		}
-		drawn = true;
 	}
 }

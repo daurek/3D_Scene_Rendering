@@ -54,7 +54,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>SFML_STATIC;WIN32;_SCL_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\.libraries\cpp-toolkit\headers;$(SolutionDir)\..\..\.libraries\sfml-2.3-vs-2015\include;$(SolutionDir)\..\..\.libraries\gl\headers;$(SolutionDir)\..\..\.libraries\tinyobjloader;$(SolutionDir)\..\..\.libraries\cpp-toolkit\sources</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\..\.libraries\cpp-toolkit\headers;$(SolutionDir)\..\..\.libraries\sfml-2.3-vs-2015\include;$(SolutionDir)\..\..\.libraries\gl\headers;$(SolutionDir)\..\..\.libraries\tinyobjloader;$(SolutionDir)\..\..\.libraries\cpp-toolkit\sources;$(SolutionDir)\..\..\.libraries\rapidxml\headers</AdditionalIncludeDirectories>
+      <LanguageStandard>
+      </LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -130,22 +132,24 @@
     <ClInclude Include="..\..\..\.libraries\cpp-toolkit\headers\Void_Decoder.hpp" />
     <ClInclude Include="..\..\..\.libraries\cpp-toolkit\headers\Void_Encoder.hpp" />
     <ClInclude Include="..\..\..\.libraries\cpp-toolkit\headers\Writer.hpp" />
+    <ClInclude Include="..\..\code\Camera.hpp" />
     <ClInclude Include="..\..\code\Color_Buffer.hpp" />
     <ClInclude Include="..\..\code\Color_Buffer_Rgb565.hpp" />
     <ClInclude Include="..\..\code\Color_Buffer_Rgba8888.hpp" />
     <ClInclude Include="..\..\code\Light.hpp" />
     <ClInclude Include="..\..\code\Mesh.hpp" />
     <ClInclude Include="..\..\code\Rasterizer.hpp" />
-    <ClInclude Include="..\..\code\View.hpp" />
+    <ClInclude Include="..\..\code\Scene.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\Input_Stream.cpp" />
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\Output_Stream.cpp" />
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\String.cpp" />
+    <ClCompile Include="..\..\code\Camera.cpp" />
     <ClCompile Include="..\..\code\Light.cpp" />
     <ClCompile Include="..\..\code\main.cpp" />
     <ClCompile Include="..\..\code\Mesh.cpp" />
-    <ClCompile Include="..\..\code\View.cpp" />
+    <ClCompile Include="..\..\code\Scene.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
