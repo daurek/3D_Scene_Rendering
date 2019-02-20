@@ -189,4 +189,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\assets\scene.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>

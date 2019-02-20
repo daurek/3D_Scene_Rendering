@@ -122,9 +122,9 @@ namespace example
     {
         // Se cachean algunos valores de interés:
 
-                int   pitch         = color_buffer.get_width ();
-                int * offset_cache0 = this->offset_cache0;
-                int * offset_cache1 = this->offset_cache1;
+        int   pitch         = color_buffer.get_width ();
+        int * offset_cache0 = this->offset_cache0;
+        int * offset_cache1 = this->offset_cache1;
         const int * indices_back  = indices_end - 1;
 
         // Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):
@@ -240,11 +240,11 @@ namespace example
     {
         // Se cachean algunos valores de interés:
 
-                int   pitch         = color_buffer.get_width ();
-                int * offset_cache0 = this->offset_cache0;
-                int * offset_cache1 = this->offset_cache1;
-                int * z_cache0      = this->z_cache0;
-                int * z_cache1      = this->z_cache1;
+        int   pitch         = color_buffer.get_width ();
+        int * offset_cache0 = this->offset_cache0;
+        int * offset_cache1 = this->offset_cache1;
+        int * z_cache0      = this->z_cache0;
+        int * z_cache1      = this->z_cache1;
         const int * indices_back  = indices_end - 1;
 
         // Se busca el vértice de inicio (el que tiene menor Y) y el de terminación (el que tiene mayor Y):

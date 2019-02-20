@@ -35,7 +35,6 @@ namespace example
 		std::map< std::string, std::shared_ptr< Mesh >> meshes;
 
     public:
-        Rasterizer< Color_Buffer > rasterizer;
 
         Scene(size_t width, size_t height, const std::string & sceneContentXML);
 
@@ -50,6 +49,8 @@ namespace example
         static bool is_frontface (const Vertex * const projected_vertices, const int * const indices);
 
 		std::shared_ptr< Camera > camera;
+
+        Rasterizer< Color_Buffer > rasterizer;
     };
 
 }

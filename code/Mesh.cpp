@@ -9,14 +9,13 @@
 // Libraries
 #include "tiny_obj_loader.h"
 #include "Matrix.hpp"
-
 // Project
 #include "Scene.hpp"
 #include "Camera.hpp"
 
 namespace example
 {
-	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale), meshColor(color)
+	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color, bool isStatic) : translation(position), scaling(scale), meshColor(color), staticMesh(isStatic)
 	{
 		tinyobj::attrib_t					attributes;
 		std::vector< tinyobj::shape_t    >	shapes;
@@ -150,18 +149,19 @@ namespace example
 		{
 			if (Scene::is_frontface(transformed_vertices.data(), indices))
 			{
+				if (!staticMesh)
+				{
+					float normalMagnitude = std::sqrt(std::powf(original_normals[*indices][0], 2) + std::powf(original_normals[*indices][1], 2) + std::powf(original_normals[*indices][2], 2));
+					Vertex normalNormalized({ original_normals[*indices][0] / normalMagnitude, original_normals[*indices][1] / normalMagnitude, original_normals[*indices][2] / normalMagnitude });
 
-				float normalMagnitude = std::sqrt(std::powf(original_normals[*indices][0], 2) + std::powf(original_normals[*indices][1], 2) + std::powf(original_normals[*indices][2], 2));
-				Vertex normalNormalized({ original_normals[*indices][0] / normalMagnitude, original_normals[*indices][1] / normalMagnitude, original_normals[*indices][2] / normalMagnitude });
+					float lightMagnitude = std::sqrt(std::powf(rasterizer.light.position[0], 2) + std::powf(rasterizer.light.position[1], 2) + std::powf(rasterizer.light.position[2], 2));
+					Vertex lightNormalized({ rasterizer.light.position[0] / lightMagnitude, rasterizer.light.position[1] / lightMagnitude, rasterizer.light.position[2] / lightMagnitude });
 
-				float lightMagnitude = std::sqrt(std::powf(rasterizer.light.position[0], 2) + std::powf(rasterizer.light.position[1], 2) + std::powf(rasterizer.light.position[2], 2));
-				Vertex lightNormalized({ rasterizer.light.position[0] / lightMagnitude, rasterizer.light.position[1] / lightMagnitude, rasterizer.light.position[2] / lightMagnitude });
+					float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
+					if (intensity < 0.2f)  intensity = 0.2f;
 
-
-				float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
-				if (intensity < 0)  intensity = 0;
-
-				original_colors[*indices].set_clamped(meshColor.data.component.r * intensity, meshColor.data.component.g * intensity, meshColor.data.component.b * intensity);
+					original_colors[*indices].set_clamped(meshColor.data.component.r * intensity, meshColor.data.component.g * intensity, meshColor.data.component.b * intensity);
+				}
 
 				//auto intensity = original_normals[*indices][0] * 1 + original_normals[*indices][1] * 0 + original_normals[*indices][2] * 0;//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
 				//if (intensity < 0)  intensity = 0;

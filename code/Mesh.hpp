@@ -12,6 +12,8 @@
 #include "Rotation.hpp"
 #include "Scaling.hpp"
 #include "Rasterizer.hpp"
+// Project
+#include "Camera.hpp"
 
 namespace example
 {
@@ -24,8 +26,6 @@ namespace example
 	using toolkit::Rotation3f;
 	using toolkit::Scaling3f;
 	using toolkit::Transformation3f;
-
-	class Camera;
 
 	class Mesh
 	{
@@ -42,20 +42,21 @@ namespace example
 
 			Mesh(){}
 
-			Mesh(const std::string & obj_file_path, Translation3f position, Scaling3f scale, Color color);
+			Mesh(const std::string & obj_file_path, Translation3f position, Scaling3f scale, Color color, bool isStatic);
 
 			void Update(std::shared_ptr< Camera > activeCamera);
 
 			void Render(Rasterizer< Color_Buffer > & rasterizer, std::shared_ptr< Camera > activeCamera);
 
 			// Mesh data
-			Vertex_Buffer     original_vertices;
-			Index_Buffer      original_indices;
-			Vertex_Colors     original_colors;
-			Vertex_Buffer     original_normals;
-			Vertex_Buffer     transformed_vertices;
-			vector< Point4i > display_vertices;
-			Color			  meshColor;
+			Vertex_Buffer		original_vertices;
+			Index_Buffer		original_indices;
+			Vertex_Colors		original_colors;
+			Vertex_Buffer		original_normals;
+			Vertex_Buffer		transformed_vertices;
+			vector< Point4i >	display_vertices;
+			Color				meshColor;
+			bool				staticMesh;
 
 			// Transform matrices
 			Translation3f		translation;
