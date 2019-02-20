@@ -31,11 +31,11 @@ namespace example
         size_t height;
 
         Color_Buffer               colorBuffer;
-        Rasterizer< Color_Buffer > rasterizer;
 
 		std::map< std::string, std::shared_ptr< Mesh >> meshes;
 
     public:
+        Rasterizer< Color_Buffer > rasterizer;
 
         Scene(size_t width, size_t height, const std::string & sceneContentXML);
 

@@ -49,11 +49,20 @@
                     data.component.a = 255;
                 }
 
+				void set_clamped(int r, int g, int b)
+				{
+					data.component.r = r < 0 ? 0 : r > 255 ? 255 : r;
+					data.component.g = g < 0 ? 0 : g > 255 ? 255 : g;
+					data.component.b = b < 0 ? 0 : b > 255 ? 255 : b;
+					data.component.a = 255;
+				}
+
                 Color & operator = (const int & value)
                 {
                     data.value = uint32_t(value);
                     return (*this);
                 }
+
             };
 
             typedef std::vector< Color > Buffer;

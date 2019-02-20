@@ -55,6 +55,7 @@ namespace example
 			Vertex_Buffer     original_normals;
 			Vertex_Buffer     transformed_vertices;
 			vector< Point4i > display_vertices;
+			Color			  meshColor;
 
 			// Transform matrices
 			Translation3f		translation;

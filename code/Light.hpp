@@ -19,7 +19,7 @@ namespace example
 
 	public:
 
-		Light() : position({ 1,1,0 }), color({ 255,255,0 }) {};
+		Light() : position({ 5,0,0 }), color({ 255,255,0 }) {};
 	
 		Vertex				position;
 		Color				color;

@@ -16,7 +16,7 @@
 
 namespace example
 {
-	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale)
+	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale), meshColor(color)
 	{
 		tinyobj::attrib_t					attributes;
 		std::vector< tinyobj::shape_t    >	shapes;
@@ -65,21 +65,24 @@ namespace example
 		original_colors.resize(number_of_colors * 3);
 		original_normals.resize(number_of_normals * 3);
 
-		//Vertex light_dir({std::sqrt(5)});
-		Vertex light_dir({ 1,1,0 });
+		Vertex light_dir({ 5,0,0 });
 		Vertex light_color({255,0,0});
 
 		for (size_t index = 0, color_counter = 0; index < number_of_colors; index++, color_counter += 3)
 		{
 			//original_normals[index] = Vertex({ normals[color_counter + 0], normals[color_counter + 1], normals[color_counter + 2] });
 			//original_colors[index].set (colors[color_counter], colors[color_counter+1], colors[color_counter+2]);
-			float intensity = (normals[color_counter + 0] * light_dir[0] + normals[color_counter + 1] * light_dir[1] + normals[color_counter + 2] * light_dir[2]) * 1.f;
+			float normalMagnitude = std::sqrt(std::powf(normals[color_counter + 0], 2) + std::powf(normals[color_counter + 1], 2) + std::powf(normals[color_counter + 2], 2) );
+			Vertex normalNormalized({ normals[color_counter + 0] / normalMagnitude, normals[color_counter + 0] / normalMagnitude, normals[color_counter + 0] / normalMagnitude });
+
+			float lightMagnitude = std::sqrt(std::powf(light_dir[0], 2) + std::powf(light_dir[1], 2) + std::powf(light_dir[2], 2));
+			Vertex lightNormalized({ light_dir[0]/ lightMagnitude, light_dir[1] / lightMagnitude, light_dir[2] / lightMagnitude });
+
+
+			float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
 			if (intensity < 0)  intensity = 0;
 			
-			//riginal_colors[index].set(200 * attributes.normals[color_counter + 0], 185 * attributes.normals[color_counter + 1], 155 * attributes.normals[color_counter + 2] );
-			//original_colors[index].set(200 * intensity, 185 * intensity, 155 * intensity);
-			//original_colors[index].set (colors[color_counter], colors[color_counter+1], colors[color_counter+2]);
-			original_colors[index]= color.data.value * intensity;
+			original_colors[index].set_clamped(color.data.component.r * intensity, color.data.component.g * intensity, color.data.component.b * intensity);
 			original_normals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2] });
 		}
 
@@ -104,7 +107,7 @@ namespace example
 	void Mesh::Update(std::shared_ptr< Camera > activeCamera)
 	{
 		static float angle = 0.f;
-		angle += 0.1f;
+		angle += 0.01f;
 
 		//rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
 		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
@@ -147,6 +150,19 @@ namespace example
 		{
 			if (Scene::is_frontface(transformed_vertices.data(), indices))
 			{
+
+				float normalMagnitude = std::sqrt(std::powf(original_normals[*indices][0], 2) + std::powf(original_normals[*indices][1], 2) + std::powf(original_normals[*indices][2], 2));
+				Vertex normalNormalized({ original_normals[*indices][0] / normalMagnitude, original_normals[*indices][1] / normalMagnitude, original_normals[*indices][2] / normalMagnitude });
+
+				float lightMagnitude = std::sqrt(std::powf(rasterizer.light.position[0], 2) + std::powf(rasterizer.light.position[1], 2) + std::powf(rasterizer.light.position[2], 2));
+				Vertex lightNormalized({ rasterizer.light.position[0] / lightMagnitude, rasterizer.light.position[1] / lightMagnitude, rasterizer.light.position[2] / lightMagnitude });
+
+
+				float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
+				if (intensity < 0)  intensity = 0;
+
+				original_colors[*indices].set_clamped(meshColor.data.component.r * intensity, meshColor.data.component.g * intensity, meshColor.data.component.b * intensity);
+
 				//auto intensity = original_normals[*indices][0] * 1 + original_normals[*indices][1] * 0 + original_normals[*indices][2] * 0;//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
 				//if (intensity < 0)  intensity = 0;
 				//// Se establece el color del polígono a partir del color de su primer vértice:
