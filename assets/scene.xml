@@ -3,7 +3,7 @@
 
 	<meshes>
     <mesh id="sphere">
-      <path>tree3.obj</path>
+      <path>tree04.obj</path>
       <static>1</static>
       <position>
           <x>0</x>
@@ -16,9 +16,9 @@
           <z>0</z>
       </rotation>
       <scale>
-          <x>0.07</x>
-          <y>0.07</y>
-          <z>0.07</z>
+          <x>0.05</x>
+          <y>0.05</y>
+          <z>0.05</z>
       </scale>
       <color>
         <red>50</red>
@@ -27,11 +27,11 @@
       </color>
     </mesh>
     <mesh id="sphere2">
-      <path>terrain2.obj</path>
+      <path>sphere1.obj</path>
       <static>1</static>
       <position>
         <x>0</x>
-        <y>0</y>
+        <y>-0.5</y>
         <z>-10</z>
       </position>
       <rotation>
@@ -40,9 +40,9 @@
         <z>0</z>
       </rotation>
       <scale>
-        <x>0.1</x>
-        <y>0.07</y>
-        <z>0.1</z>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
       </scale>
       <color>
         <red>250</red>

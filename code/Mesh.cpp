@@ -11,7 +11,6 @@
 #include "Matrix.hpp"
 // Project
 #include "Scene.hpp"
-#include "Camera.hpp"
 
 namespace example
 {
@@ -23,7 +22,7 @@ namespace example
 		std::string warn;
 		std::string error;
 
-		std::cout << "\n	Loading " << objFilePath << " ... \n";
+		std::cout << "\n\n	Loading " << objFilePath << " ... \n";
 
 		if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warn, &error, objFilePath.c_str()))
 		{
@@ -61,28 +60,16 @@ namespace example
 
 		assert(number_of_colors == number_of_vertices);
 
-		original_colors.resize(number_of_colors * 3);
-		original_normals.resize(number_of_normals * 3);
-
-		Vertex light_dir({ 5,0,0 });
-		Vertex light_color({255,0,0});
+		original_colors.resize(number_of_colors);
+		original_normals.resize(number_of_normals);
+		transformed_colors.resize(original_colors.size());
 
 		for (size_t index = 0, color_counter = 0; index < number_of_colors; index++, color_counter += 3)
 		{
-			//original_normals[index] = Vertex({ normals[color_counter + 0], normals[color_counter + 1], normals[color_counter + 2] });
-			//original_colors[index].set (colors[color_counter], colors[color_counter+1], colors[color_counter+2]);
-			float normalMagnitude = std::sqrt(std::powf(normals[color_counter + 0], 2) + std::powf(normals[color_counter + 1], 2) + std::powf(normals[color_counter + 2], 2) );
-			Vertex normalNormalized({ normals[color_counter + 0] / normalMagnitude, normals[color_counter + 0] / normalMagnitude, normals[color_counter + 0] / normalMagnitude });
-
-			float lightMagnitude = std::sqrt(std::powf(light_dir[0], 2) + std::powf(light_dir[1], 2) + std::powf(light_dir[2], 2));
-			Vertex lightNormalized({ light_dir[0]/ lightMagnitude, light_dir[1] / lightMagnitude, light_dir[2] / lightMagnitude });
+			original_colors[index] = meshColor;
+			original_normals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2], 0 });
 
 
-			float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
-			if (intensity < 0)  intensity = 0;
-			
-			original_colors[index].set_clamped(color.data.component.r * intensity, color.data.component.g * intensity, color.data.component.b * intensity);
-			original_normals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2] });
 		}
 
 		// Triangle data
@@ -103,7 +90,7 @@ namespace example
 		}
 	}
 
-	void Mesh::Update(std::shared_ptr< Camera > activeCamera)
+	void Mesh::Update(Scene * scene)
 	{
 		static float angle = 0.f;
 		angle += 0.01f;
@@ -112,17 +99,27 @@ namespace example
 		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
 
 		// Creación de la matriz de transformación unificada:
-		//std::cout << translation.operator const toolkit::Matrix<4U, 4U, float> &[0];
-		//translation.set(1)
-		//translation.set(translation[0] + 1,1,1);
-		transformation = activeCamera->projection * translation * rotation_x * rotation_y * scaling;
+		transformation = translation * rotation_x * rotation_y * scaling;
 		// Se transforman todos los vértices usando la matriz de transformación resultante:
 		for (size_t index = 0, number_of_vertices = original_vertices.size(); index < number_of_vertices; index++)
 		{
+			Vertex transformedVertex = Matrix44f(transformation) * Matrix41f(original_vertices[index]);
+			Vertex transformedNormal = Matrix44f(transformation) * Matrix41f(original_normals[index]);
 			// Se multiplican todos los vértices originales con la matriz de transformación y
 			// se guarda el resultado en otro vertex buffer:
 
-			Vertex & vertex = transformed_vertices[index] = Matrix44f(transformation) * Matrix41f(original_vertices[index]);
+			float normalMagnitude = std::sqrt(std::powf(transformedNormal[0], 2) + std::powf(transformedNormal[1], 2) + std::powf(transformedNormal[2], 2));
+			Vertex normalNormalized({ transformedNormal[0] / normalMagnitude,transformedNormal[1] / normalMagnitude,transformedNormal[2] / normalMagnitude });
+
+			float lightMagnitude = std::sqrt(std::powf(scene->rasterizer.light.position[0], 2) + std::powf(scene->rasterizer.light.position[1], 2) + std::powf(scene->rasterizer.light.position[2], 2));
+			Vertex lightNormalized({ scene->rasterizer.light.position[0] / lightMagnitude, scene->rasterizer.light.position[1] / lightMagnitude, scene->rasterizer.light.position[2] / lightMagnitude });
+
+			float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
+			intensity = std::max(intensity, 0.2f);
+
+			transformed_colors[index].set_clamped(static_cast<int>(meshColor.data.component.r * intensity), static_cast<int>(meshColor.data.component.g * intensity), static_cast<int>(meshColor.data.component.b * intensity));
+
+			Vertex & vertex = transformed_vertices[index] = Matrix44f(scene->camera->projection) * Matrix41f(transformedVertex);
 
 			// La matriz de proyección en perspectiva hace que el último componente del vector
 			// transformado no tenga valor 1.0, por lo que hay que normalizarlo dividiendo:
@@ -136,9 +133,9 @@ namespace example
 		}
 	}
 
-	void Mesh::Render(Rasterizer< Color_Buffer > & rasterizer, std::shared_ptr< Camera > activeCamera)
+	void Mesh::Render(Scene * scene)
 	{
-		Matrix44f cameraTransform = Matrix44f(activeCamera->getTransformation());
+		Matrix44f cameraTransform = Matrix44f(scene->camera->getTransformation());
 
 		for (size_t index = 0, number_of_vertices = transformed_vertices.size(); index < number_of_vertices; index++)
 		{
@@ -147,32 +144,26 @@ namespace example
 
 		for (int * indices = original_indices.data(), *end = indices + original_indices.size(); indices < end; indices += 3)
 		{
-			if (Scene::is_frontface(transformed_vertices.data(), indices))
+			if (IsFrontface(transformed_vertices.data(), indices))
 			{
-				if (!staticMesh)
-				{
-					float normalMagnitude = std::sqrt(std::powf(original_normals[*indices][0], 2) + std::powf(original_normals[*indices][1], 2) + std::powf(original_normals[*indices][2], 2));
-					Vertex normalNormalized({ original_normals[*indices][0] / normalMagnitude, original_normals[*indices][1] / normalMagnitude, original_normals[*indices][2] / normalMagnitude });
-
-					float lightMagnitude = std::sqrt(std::powf(rasterizer.light.position[0], 2) + std::powf(rasterizer.light.position[1], 2) + std::powf(rasterizer.light.position[2], 2));
-					Vertex lightNormalized({ rasterizer.light.position[0] / lightMagnitude, rasterizer.light.position[1] / lightMagnitude, rasterizer.light.position[2] / lightMagnitude });
-
-					float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
-					if (intensity < 0.2f)  intensity = 0.2f;
-
-					original_colors[*indices].set_clamped(meshColor.data.component.r * intensity, meshColor.data.component.g * intensity, meshColor.data.component.b * intensity);
-				}
-
-				//auto intensity = original_normals[*indices][0] * 1 + original_normals[*indices][1] * 0 + original_normals[*indices][2] * 0;//+ original_normals[(*indices)].coordinates[1] * rasterizer.light.position.coordinates[1] + original_normals[(*indices)].coordinates[2] * rasterizer.light.position.coordinates[2]) * 0.5f;
-				//if (intensity < 0)  intensity = 0;
-				//// Se establece el color del polígono a partir del color de su primer vértice:
-				//original_colors[*indices].set(255 * intensity, 255 * intensity, 255 * intensity);
-				//original_colors[*indices].set(original_colors[*indices].data.component.a * intensity, original_colors[*indices].data.component.b * 0.9f, 155 * intensity);// *= intensity;
-				rasterizer.set_color(original_colors[*indices]);
+				scene->rasterizer.set_color(transformed_colors[*indices]);
 				// Se rellena el polígono:
-				rasterizer.fill_convex_polygon_z_buffer(display_vertices.data(), indices, indices + 3);
-				//if(!drawn) std::cout << display_vertices[*indices][1] << std::endl;
+				scene->rasterizer.fill_convex_polygon_z_buffer(display_vertices.data(), indices, indices + 3);
 			}
 		}
 	}
+
+	bool Mesh::IsFrontface(const Vertex * const projected_vertices, const int * const indices)
+	{
+		const Vertex & v0 = projected_vertices[indices[0]];
+		const Vertex & v1 = projected_vertices[indices[1]];
+		const Vertex & v2 = projected_vertices[indices[2]];
+
+		// Se asumen coordenadas proyectadas y polÃ­gonos definidos en sentido horario.
+		// Se comprueba a quÃ© lado de la lÃ­nea que pasa por v0 y v1 queda el punto v2:
+
+		return ((v1[0] - v0[0]) * (v2[1] - v0[1]) - (v2[0] - v0[0]) * (v1[1] - v0[1]) > 0.f);
+	}
+
+
 }

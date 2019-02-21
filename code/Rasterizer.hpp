@@ -347,7 +347,7 @@ namespace example
         z_cache0 += start_y;
         z_cache1 += start_y;
 		
-        for (int y = start_y; y < end_y && current_x < 800; y++)
+        for (int y = start_y; y < end_y ; y++)
         {
 			
             o0 = *offset_cache0++;

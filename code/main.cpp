@@ -50,8 +50,7 @@ int main ()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 			{
-				scene.rasterizer.light.position[1] += 0.1f;
-				//scene.camera->translation.add(0.5f, 0, 0);
+				scene.camera->translation.add(0.5f, 0, 0);
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

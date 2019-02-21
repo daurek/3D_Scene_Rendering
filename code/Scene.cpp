@@ -21,31 +21,13 @@ namespace example
 		camera(new Camera(5, 15, 20, float(width) / float(height), { float(width / 2), float(height / 2), 0.f }, { float(width / 2), float(height / 2), 100000000.f }))
     {
 		LoadScene(scene_content_xml);
-
-		//meshes.push_back({ "../../assets/meshes/tree1.obj", {1.8f,1,-10 }, 1,{ 0,120,0 } });
-		//meshes.push_back({ "../../assets/sphere.obj",{ 1,0,-10 }, 1 });
-		//meshes.push_back({ "../../assets/meshes/sphere1.obj",{ 1,0,-10 }, 1, {120,0,0} });
-		//meshes.push_back({ "../../assets/terrain.obj",{ 1,0,-10 }, 1, {120,0,0} });
-
-		
     }
 
     void Scene::Update ()
     {
-        // Se actualizan los parámetros de transformatión (sólo se modifica el ángulo):
-        //static float angle = 0.f;
-       // angle += 0.025f;
-
-		//for (auto mesh = meshes.begin(); mesh != meshes.end(); ++mesh)
-		//{
-		//	// Setting rotation
-		//	//mesh->rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
-		//	//mesh->rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
-		//}
-
 		// Update every mesh
 		for (auto const& mesh : meshes)
-			mesh.second->Update(camera);
+			mesh.second->Update(this);
     }
 
     void Scene::Render ()
@@ -55,7 +37,7 @@ namespace example
 
 		// Render every mesh
 		for (auto const& mesh : meshes)
-			mesh.second->Render(rasterizer, camera);
+			mesh.second->Render(this);
 
         // Copy hidden color buffer to the window color buffer
         rasterizer.get_color_buffer ().gl_draw_pixels (0, 0);
@@ -124,9 +106,9 @@ namespace example
 			std::string green_str = color_node->first_node("green")->value();
 			std::string blue_str = color_node->first_node("blue")->value();
 			// Color float values
-			uint8_t red = std::stof(red_str);
-			uint8_t green = std::stof(green_str);
-			uint8_t blue = std::stof(blue_str);
+			uint8_t red = static_cast<uint8_t>		(std::stof(red_str));
+			uint8_t green = static_cast<uint8_t>	(std::stof(green_str));
+			uint8_t blue = static_cast<uint8_t>		(std::stof(blue_str));
 
 			// Create mesh
 			std::shared_ptr< Mesh > mesh(new Mesh
@@ -152,17 +134,5 @@ namespace example
 			}
 		}
 	}
-
-    bool Scene::is_frontface (const Vertex * const projected_vertices, const int * const indices)
-    {
-        const Vertex & v0 = projected_vertices[indices[0]];
-        const Vertex & v1 = projected_vertices[indices[1]];
-        const Vertex & v2 = projected_vertices[indices[2]];
-
-        // Se asumen coordenadas proyectadas y polígonos definidos en sentido horario.
-        // Se comprueba a qué lado de la línea que pasa por v0 y v1 queda el punto v2:
-
-        return ((v1[0] - v0[0]) * (v2[1] - v0[1]) - (v2[0] - v0[0]) * (v1[1] - v0[1]) > 0.f);
-    }
 
 }

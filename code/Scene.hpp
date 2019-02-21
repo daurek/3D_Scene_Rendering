@@ -33,7 +33,7 @@ namespace example
         Color_Buffer               colorBuffer;
 
 		std::map< std::string, std::shared_ptr< Mesh >> meshes;
-
+		
     public:
 
         Scene(size_t width, size_t height, const std::string & sceneContentXML);
@@ -45,8 +45,6 @@ namespace example
 		void LoadScene(const std::string & file);
 
 		void LoadMeshes(rapidxml::xml_node<> * meshNode);
-
-        static bool is_frontface (const Vertex * const projected_vertices, const int * const indices);
 
 		std::shared_ptr< Camera > camera;
 
