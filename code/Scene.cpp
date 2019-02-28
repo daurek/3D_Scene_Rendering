@@ -116,8 +116,7 @@ namespace example
 				"../../assets/meshes/" + path, 
 				{ x_pos, y_pos, z_pos	},
 				{ x_rot, y_rot, z_rot	},
-				{ red, green, blue		},
-				false
+				{ red, green, blue		}
 			));
 			
 			if (mesh)

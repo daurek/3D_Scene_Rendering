@@ -17,7 +17,6 @@
 
 namespace example
 {
-
     using toolkit::Point4f;
 
     class Scene
@@ -32,25 +31,34 @@ namespace example
 
         Color_Buffer               colorBuffer;
 
+		/// Scene Meshes map
 		std::map< std::string, std::shared_ptr< Mesh >> meshes;
-		
+
+		Mesh * parent;
+		std::vector<Mesh> children;
+
     public:
 
+		/// Loads the given xml after creating the color buffer
         Scene(size_t width, size_t height, const std::string & sceneContentXML);
 
+		/// Updates every mesh
         void Update ();
 
+		/// Renders every mesh
         void Render  ();
 
+		/// Loads the xml path  
 		void LoadScene(const std::string & file);
 
+		/// Loads the meshes node creating every Mesh
 		void LoadMeshes(rapidxml::xml_node<> * meshNode);
 
+		/// Scene camera
 		std::shared_ptr< Camera > camera;
 
         Rasterizer< Color_Buffer > rasterizer;
     };
-
 }
 
 #endif

@@ -44,24 +44,27 @@ namespace example
 
 			Mesh(){}
 
-			Mesh(const std::string & obj_file_path, Translation3f position, Scaling3f scale, Color color, bool isStatic);
+			/// Loads the given obj file path into the given position and scale with the given color
+			Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color);
 
+			/// Updates the Mesh calculating every vertex position and light with the given projection
 			void Update(Scene * scene);
 
+			/// Renders the Mesh with the given rasterizer
 			void Render(Scene * scene);
 
+			/// Checks if a face is in the front
 			bool IsFrontface(const Vertex * const projected_vertices, const int * const indices);
 
 			// Mesh data
-			Vertex_Buffer		original_vertices;
-			Index_Buffer		original_indices;
-			Vertex_Colors		original_colors;
-			Vertex_Buffer		original_normals;
-			Vertex_Buffer		transformed_vertices;
-			Vertex_Colors		transformed_colors;
-			vector< Point4i >	display_vertices;
+			Vertex_Buffer		originalVertices;
+			Index_Buffer		originalIndices;
+			Vertex_Colors		originalColors;
+			Vertex_Buffer		originalNormals;
+			Vertex_Buffer		transformedVertices;
+			Vertex_Colors		transformedColors;
+			vector< Point4i >	displayVertices;
 			Color				meshColor;
-			bool				staticMesh;
 
 			// Transform matrices
 			Translation3f		translation;

@@ -1,21 +1,15 @@
 #ifndef CAMERA_HEADER
 #define CAMERA_HEADER
 
-// System
-
-
 // Libraries
 #include "Projection.hpp"
 #include "Scaling.hpp"
 #include "Translation.hpp"
 #include "Rotation.hpp"
 #include "Transformation.hpp"
-// Project
-
 
 namespace example
 {
-
 	using toolkit::Projection3f;
 	using toolkit::Scaling3f;
 	using toolkit::Translation3f;
@@ -34,7 +28,6 @@ namespace example
 		Projection3f		projection;
 		Scaling3f			scaling;
 		Translation3f		translation;
-		
 
 		const Transformation3f & getTransformation()
 		{
@@ -46,11 +39,6 @@ namespace example
 
 		Transformation3f	transformation;
 	};
-
-	
-
-	
-
 }
 
 #endif
