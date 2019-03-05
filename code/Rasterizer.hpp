@@ -110,6 +110,13 @@ namespace example
         template< typename VALUE_TYPE, size_t SHIFT >
         void interpolate (int   * cache, int   v0, int   v1, int y_min, int y_max);
 
+		int clip(int n, int lower, int upper)
+		{
+			return std::max(lower, std::min(n, upper));
+		}
+
+		
+
     };
 
     template< class  COLOR_BUFFER_TYPE >
@@ -241,6 +248,8 @@ namespace example
         // Se cachean algunos valores de interés:
 
         int   pitch         = color_buffer.get_width ();
+        int   height         = color_buffer.get_height();
+	
         int * offset_cache0 = this->offset_cache0;
         int * offset_cache1 = this->offset_cache1;
         int * z_cache0      = this->z_cache0;
@@ -278,13 +287,12 @@ namespace example
         const int * current_index = start_index;
         const int *    next_index = start_index > indices_begin ? start_index - 1 : indices_back;
 
-        int y0 = vertices[*current_index].coordinates ()[1];
-        int y1 = vertices[*   next_index].coordinates ()[1];
+        int y0 = clip(vertices[*current_index].coordinates()[1], 0, height);
+        int y1 = clip(vertices[*next_index].coordinates()[1], 0, height);
         int z0 = vertices[*current_index].coordinates ()[2];
         int z1 = vertices[*   next_index].coordinates ()[2];
-        int o0 = vertices[*current_index].coordinates ()[0] + y0 * pitch;
-        int o1 = vertices[*   next_index].coordinates ()[0] + y1 * pitch;
-        int current_x = vertices[*   next_index].coordinates ()[0];
+        int o0 = clip(vertices[*current_index].coordinates()[0], 0, pitch) + y0 * pitch;
+        int o1 = clip(vertices[*next_index].coordinates()[0], 0, pitch) + y1 * pitch;
 		
         while (true)
         {
@@ -296,11 +304,11 @@ namespace example
             if (   next_index == indices_begin) next_index    = indices_back; else    next_index--;
 
             y0 = y1;
-            y1 = vertices[*next_index].coordinates ()[1];
+			y1 = clip(vertices[*next_index].coordinates()[1], 0, height);
             z0 = z1;
             z1 = vertices[*next_index].coordinates ()[2];
             o0 = o1;
-            o1 = vertices[*next_index].coordinates ()[0] + y1 * pitch;
+            o1 = clip(vertices[*next_index].coordinates()[0], 0, pitch) + y1 * pitch;
         }
 
         int end_offset = o1;
@@ -309,14 +317,14 @@ namespace example
         // vértice con Y mayor en sentido horario:
 
         current_index = start_index;
-            next_index = start_index < indices_back ? start_index + 1 : indices_begin;
+		   next_index = start_index < indices_back ? start_index + 1 : indices_begin;
 
-        y0 = vertices[*current_index].coordinates ()[1];
-        y1 = vertices[*   next_index].coordinates ()[1];
+        y0 = clip(vertices[*current_index].coordinates()[1], 0, height);
+        y1 = clip(vertices[*next_index].coordinates()[1], 0, height);
         z0 = vertices[*current_index].coordinates ()[2];
         z1 = vertices[*   next_index].coordinates ()[2];
-        o0 = vertices[*current_index].coordinates ()[0] + y0 * pitch;
-        o1 = vertices[*   next_index].coordinates ()[0] + y1 * pitch;
+        o0 = clip(vertices[*current_index].coordinates()[0], 0, pitch) + y0 * pitch;
+        o1 = clip(vertices[*next_index].coordinates()[0], 0, pitch) + y1 * pitch;
 
         while (true)
         {
@@ -328,17 +336,17 @@ namespace example
             if (   next_index == indices_back) next_index    = indices_begin; else next_index++;
 
             y0 = y1;
-            y1 = vertices[*next_index].coordinates ()[1];
+            y1 = clip(vertices[*next_index].coordinates ()[1], 0, height);
             z0 = z1;
             z1 = vertices[*next_index].coordinates ()[2];
             o0 = o1;
-            o1 = vertices[*next_index].coordinates ()[0] + y1 * pitch;
+			o1 = clip(vertices[*next_index].coordinates()[0], 0, pitch) + y1 * pitch;
         }
 
         if (o1 > end_offset) end_offset = o1;
 
-		if (start_y <= 0) start_y = 1;
-		if (end_y > 600) end_y = 600;
+		start_y = std::max(0, start_y);
+		end_y = std::min(end_y, height);
 
         // Se rellenan las scanlines desde la que tiene menor Y hasta la que tiene mayor Y:
 
@@ -349,7 +357,6 @@ namespace example
 		
         for (int y = start_y; y < end_y ; y++)
         {
-			
             o0 = *offset_cache0++;
             o1 = *offset_cache1++;
             z0 = *z_cache0++;
@@ -358,7 +365,6 @@ namespace example
             if (o0 < o1)
             {
                 int z_step = (z1 - z0) / (o1 - o0);
-
                 while (o0 < o1)
                 {
 					if (z0 < z_buffer[o0])
@@ -414,6 +420,8 @@ namespace example
             }
         }
     }
+
+
 
 }
 

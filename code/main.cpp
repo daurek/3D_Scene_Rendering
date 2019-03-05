@@ -49,22 +49,22 @@ int main ()
             }
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-				scene.camera->translation.add(0.5f, 0, 0);
+				scene.camera->translation.add(2, 0, 0);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-				scene.camera->translation.add(-0.5f, 0, 0);
+				scene.camera->translation.add(-2, 0, 0);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-				scene.camera->translation.add(0, 0, -5.f);
+				scene.camera->translation.add(0, 0, -5);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 				scene.camera->translation.add(0,0, 5.f);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-				scene.camera->translation.add(0, 1, 0);
+				scene.camera->translation.add(0, 2, 0);
 	
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				scene.camera->translation.add(0, -1, 0);
+				scene.camera->translation.add(0, -2, 0);
         }
 
         // Update the view:
