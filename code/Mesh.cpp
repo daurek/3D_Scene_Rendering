@@ -92,7 +92,7 @@ namespace example
 		}
 	}
 
-	void Mesh::Update(Scene * scene)
+	void Mesh::Update(Scene * scene, Transformation3f parentTransform)
 	{
 		static float angle = 0.f;
 		angle += 0.01f;
@@ -101,7 +101,7 @@ namespace example
 		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
 
 		// Unified transform matrix
-		transformation = translation * rotation_x * rotation_y * scaling;
+		transformation = parentTransform * translation * rotation_x * rotation_y * scaling;
 
 		// Transform every vertex using the unified transfrom
 		for (size_t index = 0, number_of_vertices = originalVertices.size(); index < number_of_vertices; index++)
@@ -132,9 +132,12 @@ namespace example
 			vertex[2] *= divisor;
 			vertex[3] = 1.f;
 		}
+
+		for (auto& meshChild : meshesChildren)
+			meshChild->Update(scene, transformation);
 	}
 
-	void Mesh::Render(Scene * scene)
+	void Mesh::Render(Scene * scene,Transformation3f parentTransform)
 	{
 		// Get camera transform in order to get the display vertex
 		Matrix44f cameraTransform = Matrix44f(scene->camera->getTransformation());
@@ -153,6 +156,9 @@ namespace example
 				scene->rasterizer.fill_convex_polygon_z_buffer(displayVertices.data(), indices, indices + 3);
 			}
 		}
+
+		for (auto& meshChild : meshesChildren)
+			meshChild->Render(scene, transformation);
 	}
 
 	bool Mesh::IsFrontface(const Vertex * const projected_vertices, const int * const indices)

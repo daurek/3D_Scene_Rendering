@@ -48,15 +48,15 @@ namespace example
 			Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color);
 
 			/// Updates the Mesh calculating every vertex position and light with the given projection
-			void Update(Scene * scene);
+			void Update(Scene * scene, Transformation3f parentTransform = Transformation3f());
 
 			/// Renders the Mesh with the given rasterizer
-			void Render(Scene * scene);
+			void Render(Scene * scene, Transformation3f parentTransform = Transformation3f());
 
 			/// Checks if a face is in the front
 			bool IsFrontface(const Vertex * const projected_vertices, const int * const indices);
 
-			// Mesh data
+			// Mesh Data
 			Vertex_Buffer		originalVertices;
 			Index_Buffer		originalIndices;
 			Vertex_Colors		originalColors;
@@ -72,6 +72,10 @@ namespace example
 			Rotation3f			rotation_y;
 			Scaling3f			scaling;
 			Transformation3f	transformation;
+
+			// Hierarchy Data	
+			Transformation3f	meshParent;
+			vector< std::shared_ptr<Mesh> >		meshesChildren;
 	};
 
 		

@@ -2,33 +2,34 @@
 <scene>
 
 	<meshes>
-    <mesh id="sphere">
-      <path>tree04.obj</path>
-      <static>1</static>
-      <position>
-          <x>0</x>
-          <y>0</y>
-          <z>-10</z>
-      </position>
-      <rotation>
-          <x>0</x>
-          <y>0</y>
-          <z>0</z>
-      </rotation>
-      <scale>
-          <x>0.05</x>
-          <y>0.05</y>
-          <z>0.05</z>
-      </scale>
-      <color>
-        <red>50</red>
-        <green>200</green>
-        <blue>50</blue>
-      </color>
-    </mesh>
+    
     <mesh id="sphere2">
       <path>sphere1.obj</path>
-      <static>1</static>
+      <children>
+        <mesh id="sphere">
+          <path>tree04.obj</path>
+          <position>
+            <x>0</x>
+            <y>0</y>
+            <z>-2</z>
+          </position>
+          <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </rotation>
+          <scale>
+            <x>0.05</x>
+            <y>0.05</y>
+            <z>0.05</z>
+          </scale>
+          <color>
+            <red>50</red>
+            <green>200</green>
+            <blue>50</blue>
+          </color>
+        </mesh>
+      </children>
       <position>
         <x>0</x>
         <y>-0.5</y>

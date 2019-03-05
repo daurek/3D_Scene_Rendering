@@ -52,7 +52,10 @@ namespace example
 		void LoadScene(const std::string & file);
 
 		/// Loads the meshes node creating every Mesh
-		void LoadMeshes(rapidxml::xml_node<> * meshNode);
+		void LoadMeshes(rapidxml::xml_node<> * meshesNode);
+
+		/// Loads the given mesh
+		std::shared_ptr< Mesh > LoadMesh(rapidxml::xml_node<> * meshNode);
 
 		/// Scene camera
 		std::shared_ptr< Camera > camera;
