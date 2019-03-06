@@ -1,4 +1,3 @@
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *\
  *                                                                             *
  *  Started by Ángel on december of 2013                                       *
@@ -20,7 +19,7 @@
 #include <algorithm>
 #include "Light.hpp"
 
-namespace example
+namespace renderscene
 {
 
     using toolkit::Point4i;

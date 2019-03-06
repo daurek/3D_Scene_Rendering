@@ -18,7 +18,7 @@
     #include <stdint.h>             // This header is <csdint> on C++11...
     #include <vector>
 
-    namespace example
+    namespace renderscene
     {
 
         class Color_Buffer_Rgb565 : public Color_Buffer

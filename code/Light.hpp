@@ -1,27 +1,35 @@
+/// ----------------------------------------------------------------------------------------------------------------------
+/// 3D SCENE RENDERING
+/// \class renderscene::Light
+///
+/// \author Ilyass Sofi Hlimi
+/// \date 06/03/2019
+///
+/// Contact: ilyassgame@gmail.com
+/// ----------------------------------------------------------------------------------------------------------------------
+
 #ifndef LIGHT_HEADER
 #define LIGHT_HEADER
 
-#include <Point.hpp>
-#include "Translation.hpp"
+#include "Point.hpp"
+#include "Color_Buffer_Rgba8888.hpp"
 
-namespace example
+namespace renderscene
 {
-	using toolkit::Translation3f;
-	using toolkit::Point4f;
-
 	class Light
 	{
 
 	private:
 
-		typedef Point4f               Color;
-		typedef Point4f               Vertex;
+		typedef toolkit::Point4f	  Vertex;
+		typedef Color_Buffer_Rgba8888 Color_Buffer;
+		typedef Color_Buffer::Color	  Color;
 
 	public:
 
-		Light() : position({ 5,0,0 }), color({ 255,255,0 }) {};
+		Light(Vertex _position, Color _color) : position(_position), color(_color) {};
 	
-		Vertex				position;
+		Vertex	position;
 		Color				color;
 
 	};

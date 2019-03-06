@@ -12,7 +12,7 @@
 #ifndef COLOR_BUFFER_HEADER
 #define COLOR_BUFFER_HEADER
 
-    namespace example
+    namespace renderscene
     {
 
         class Color_Buffer

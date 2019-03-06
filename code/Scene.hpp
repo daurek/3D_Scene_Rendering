@@ -1,3 +1,13 @@
+/// ----------------------------------------------------------------------------------------------------------------------
+/// 3D SCENE RENDERING
+/// \class renderscene::Scene
+///
+/// \author Ilyass Sofi Hlimi
+/// \date 06/03/2019
+///
+/// Contact: ilyassgame@gmail.com
+/// ----------------------------------------------------------------------------------------------------------------------
+
 #ifndef SCENE_HEADER
 #define SCENE_HEADER
 
@@ -15,51 +25,48 @@
 #include "Mesh.hpp"
 #include "Camera.hpp"
 
-namespace example
+namespace renderscene
 {
-    using toolkit::Point4f;
-
+	/// Render Scene with Meshes
     class Scene
     {
     private:
 
         typedef Color_Buffer_Rgba8888 Color_Buffer;
-        typedef Point4f               Vertex;
+		typedef Point4f               Vertex;
 
         size_t width;
         size_t height;
 
         Color_Buffer               colorBuffer;
 
-		/// Scene Meshes map
-		std::map< std::string, std::shared_ptr< Mesh >> meshes;
-
-		Mesh * parent;
-		std::vector<Mesh> children;
+		/// Scene Mesh map
+		std::map< string, shared_ptr< Mesh >> meshes;
 
     public:
 
 		/// Loads the given xml after creating the color buffer
-        Scene(size_t width, size_t height, const std::string & sceneContentXML);
+        Scene(size_t width, size_t height, const string & sceneContentXML);
 
-		/// Updates every mesh
+		/// Updates every Mesh
         void Update ();
 
-		/// Renders every mesh
+		/// Renders every Mesh
         void Render  ();
 
 		/// Loads the xml path  
-		void LoadScene(const std::string & file);
+		void LoadScene(const string & file);
 
 		/// Loads the meshes node creating every Mesh
 		void LoadMeshes(rapidxml::xml_node<> * meshesNode);
 
-		/// Loads the given mesh
-		std::shared_ptr< Mesh > LoadMesh(rapidxml::xml_node<> * meshNode);
+		/// Returns the loaded Mesh with the given path
+		shared_ptr< Mesh > LoadMesh(rapidxml::xml_node<> * meshNode);
 
 		/// Scene camera
-		std::shared_ptr< Camera > camera;
+		shared_ptr< Camera > camera;
 
+		/// Rasterizer reference used to render
         Rasterizer< Color_Buffer > rasterizer;
     };
 }

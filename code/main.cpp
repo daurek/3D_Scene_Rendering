@@ -7,7 +7,7 @@
 
 
 using namespace sf;
-using namespace example;
+using namespace renderscene;
 
 static const size_t window_width  = 800;
 static const size_t window_height = 600;
@@ -19,13 +19,14 @@ int main ()
     Scene   scene  (window_width, window_height, "../../assets/scene.xml");
 
     // Initialization:
-    window.setVerticalSyncEnabled (false);
+    window.setVerticalSyncEnabled (true);
 
     glDisable (GL_BLEND);
     glDisable (GL_DITHER);
     glDisable (GL_CULL_FACE);
     glDisable (GL_DEPTH_TEST);
     glDisable (GL_TEXTURE_2D);
+	
 
     glViewport     (0, 0, window_width, window_height);
     glMatrixMode   (GL_PROJECTION);
@@ -48,6 +49,7 @@ int main ()
                 running = false;
             }
 
+			// Input
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 				scene.camera->translation.add(2, 0, 0);
 

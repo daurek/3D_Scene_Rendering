@@ -1,10 +1,19 @@
+/// ----------------------------------------------------------------------------------------------------------------------
+/// 3D SCENE RENDERING
+/// \class renderscene::Mesh
+///
+/// \author Ilyass Sofi Hlimi
+/// \date 06/03/2019
+///
+/// Contact: ilyassgame@gmail.com
+/// ----------------------------------------------------------------------------------------------------------------------
+
 // Header
 #include "Mesh.hpp"
 
 // System
 #include <cassert>
 #include <iostream>
-//#include <math.h>
 
 // Libraries
 #include "tiny_obj_loader.h"
@@ -12,23 +21,26 @@
 // Project
 #include "Scene.hpp"
 
-namespace example
+namespace renderscene
 {
-	Mesh::Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale), meshColor(color)
+
+	using std::cout;
+
+	Mesh::Mesh(const string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale), meshColor(color)
 	{
 		// __________________________________________________________________ Mesh Data
 		tinyobj::attrib_t					attributes;
-		std::vector< tinyobj::shape_t    >	shapes;
-		std::vector< tinyobj::material_t >	materials;
-		std::string warn;
-		std::string error;
+		vector< tinyobj::shape_t    >	shapes;
+		vector< tinyobj::material_t >	materials;
+		string warn;
+		string error;
 
-		std::cout << "\n\n	Loading " << objFilePath << " ... \n";
+		cout << "\n\n	Loading " << objFilePath << " ... \n";
 
 		// __________________________________________________________________ Check validity
 		if (!tinyobj::LoadObj(&attributes, &shapes, &materials, &warn, &error, objFilePath.c_str()))
 		{
-			std::cout << error << std::endl;
+			cout << error << std::endl;
 			return;
 		}
 
@@ -38,11 +50,11 @@ namespace example
 
 		// __________________________________________________________________ Vertex position data
 
-		const std::vector<tinyobj::real_t> vertices = attributes.vertices;
+		const vector<tinyobj::real_t> vertices = attributes.vertices;
 
 		// Resizing lists to determined size
 		size_t number_of_vertices = vertices.size() / 3;
-		std::cout << "	Verts: " << number_of_vertices << std::endl;
+		cout << "	Verts: " << number_of_vertices << std::endl;
 		originalVertices.resize(number_of_vertices);
 		transformedVertices.resize(number_of_vertices);
 		displayVertices.resize(number_of_vertices);
@@ -53,14 +65,14 @@ namespace example
 
 		// __________________________________________________________________ Vertex color and normal data   
 
-		const std::vector<tinyobj::real_t> colors = attributes.colors;
-		const std::vector<tinyobj::real_t> normals = attributes.normals;
+		const vector<tinyobj::real_t> colors = attributes.colors;
+		const vector<tinyobj::real_t> normals = attributes.normals;
 
 		// Resizing lists to determined size
 		size_t number_of_colors = colors.size() / 3;
 		size_t number_of_normals = normals.size() / 3;
-		std::cout << "	Colors: " << number_of_colors << std::endl;
-		std::cout << "	Normals: " << number_of_normals << std::endl;
+		cout << "	Colors: " << number_of_colors << std::endl;
+		cout << "	Normals: " << number_of_normals << std::endl;
 		assert(number_of_colors == number_of_vertices);
 		originalColors.resize(number_of_colors);
 		originalNormals.resize(number_of_normals);
@@ -79,7 +91,7 @@ namespace example
 
 		// Resizing lists to determined size
 		size_t number_of_triangles = triangles.indices.size() / 3;
-		std::cout << "	Indices: " << number_of_triangles << std::endl;
+		cout << "	Indices: " << number_of_triangles << std::endl;
 		originalIndices.resize(number_of_triangles * 3);
 
 		// Storing mesh indices data into mesh 
@@ -94,11 +106,14 @@ namespace example
 
 	void Mesh::Update(Scene * scene, Transformation3f parentTransform)
 	{
+		// TO REMOVE ______
 		static float angle = 0.f;
 		angle += 0.01f;
 
 		//rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
 		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
+		// TO REMOVE ______
+
 
 		// Unified transform matrix
 		transformation = parentTransform * translation * rotation_x * rotation_y * scaling;
@@ -110,17 +125,20 @@ namespace example
 			Vertex transformedVertex = Matrix44f(transformation) * Matrix41f(originalVertices[index]);
 			Vertex transformedNormal = Matrix44f(transformation) * Matrix41f(originalNormals[index]);
 
-			// Calculate light with the given light and normal vector
+			// ______________________________________________________ Lambert Shading ______________________________________________________
+			// Normalize vertex normal
 			float normalMagnitude = std::sqrt(std::powf(transformedNormal[0], 2) + std::powf(transformedNormal[1], 2) + std::powf(transformedNormal[2], 2));
 			Vertex normalNormalized({ transformedNormal[0] / normalMagnitude,transformedNormal[1] / normalMagnitude,transformedNormal[2] / normalMagnitude });
-
+			// Normalize light vector
 			float lightMagnitude = std::sqrt(std::powf(scene->rasterizer.light.position[0], 2) + std::powf(scene->rasterizer.light.position[1], 2) + std::powf(scene->rasterizer.light.position[2], 2));
 			Vertex lightNormalized({ scene->rasterizer.light.position[0] / lightMagnitude, scene->rasterizer.light.position[1] / lightMagnitude, scene->rasterizer.light.position[2] / lightMagnitude });
-
+			// Dot product between both normalized vectors, light and normal
 			float intensity = (normalNormalized[0] * lightNormalized[0] + normalNormalized[1] * lightNormalized[1] + normalNormalized[2] * lightNormalized[2]) * 1.f;
-			intensity = std::max(intensity, 0.2f);
-
+			intensity = std::max(intensity, 0.f);
+			// Clamp and set colors 
 			transformedColors[index].set_clamped(static_cast<int>(meshColor.data.component.r * intensity), static_cast<int>(meshColor.data.component.g * intensity), static_cast<int>(meshColor.data.component.b * intensity));
+			// _____________________________________________________________________________________________________________________________
+
 
 			// Transform the vertex with the projection of the camera
 			Vertex & vertex = transformedVertices[index] = Matrix44f(scene->camera->projection) * Matrix41f(transformedVertex);
@@ -133,11 +151,12 @@ namespace example
 			vertex[3] = 1.f;
 		}
 
+		// Update every child with their parent transform (this one)
 		for (auto& meshChild : meshesChildren)
 			meshChild->Update(scene, transformation);
 	}
 
-	void Mesh::Render(Scene * scene,Transformation3f parentTransform)
+	void Mesh::Render(Scene * scene)
 	{
 		// Get camera transform in order to get the display vertex
 		Matrix44f cameraTransform = Matrix44f(scene->camera->getTransformation());
@@ -157,8 +176,9 @@ namespace example
 			}
 		}
 
+		// Render every child
 		for (auto& meshChild : meshesChildren)
-			meshChild->Render(scene, transformation);
+			meshChild->Render(scene);
 	}
 
 	bool Mesh::IsFrontface(const Vertex * const projected_vertices, const int * const indices)
@@ -169,6 +189,4 @@ namespace example
 
 		return ((v1[0] - v0[0]) * (v2[1] - v0[1]) - (v2[0] - v0[0]) * (v1[1] - v0[1]) > 0.f);
 	}
-
-
 }

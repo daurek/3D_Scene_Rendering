@@ -10,14 +10,14 @@
 // Project
 #include "Light.hpp"
 
-namespace example
+namespace renderscene
 {
 	using namespace toolkit;
 
 	Scene::Scene(size_t width, size_t height, const std::string & scene_content_xml) : 
 		width(width), height(height), 
 		colorBuffer(width, height), 
-		rasterizer(colorBuffer, Light{}), 
+		rasterizer(colorBuffer, Light( Vertex({ 5, 4, 0}), { 255, 255, 0 })),
 		camera(new Camera(5, 15, 20, float(width) / float(height), { float(width / 2), float(height / 2), 0.f }, { float(width / 2), float(height / 2), 100000000.f }))
     {
 		LoadScene(scene_content_xml);
@@ -68,7 +68,9 @@ namespace example
 			// Get Name
 			std::string entity_id = meshNode->first_attribute()->value();
 
+			// Get Mesh
 			auto mesh = LoadMesh(meshNode);
+			// Add it to the map if it exists
 			if (mesh) meshes[entity_id] = mesh;
 			else std::cout << "\n Mesh has not been loaded";
 		}
@@ -137,10 +139,9 @@ namespace example
 		rapidxml::xml_node<> * children = meshNode->first_node("children");
 		if (children)
 		{
+			// Create children
 			for (rapidxml::xml_node<>* meshChildNode = children->first_node(); meshChildNode; meshChildNode = meshChildNode->next_sibling())
-			{
-				mesh->meshesChildren.push_back(LoadMesh(meshChildNode));
-			}
+				mesh->AddChild(LoadMesh(meshChildNode));
 		}
 
 		return mesh;

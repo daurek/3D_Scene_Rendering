@@ -1,6 +1,16 @@
+/// ----------------------------------------------------------------------------------------------------------------------
+/// 3D SCENE RENDERING
+/// \class renderscene::Mesh
+///
+/// \author Ilyass Sofi Hlimi
+/// \date 06/03/2019
+///
+/// Contact: ilyassgame@gmail.com
+/// ----------------------------------------------------------------------------------------------------------------------
+
 #ifndef MESH_HEADER
 #define MESH_HEADER
-#define TINYOBJLOADER_IMPLEMENTATION // define this in only *one* .cc
+#define TINYOBJLOADER_IMPLEMENTATION
 
 // System
 #include <string>
@@ -11,13 +21,16 @@
 #include "Translation.hpp"
 #include "Rotation.hpp"
 #include "Scaling.hpp"
+// Project
 #include "Rasterizer.hpp"
-
 #include "Camera.hpp" 
 
-namespace example
+namespace renderscene
 {
 	using std::vector;
+	using std::shared_ptr;
+	using std::string;
+	
 	using toolkit::Point4i;
 	using toolkit::Point4f;
 	using toolkit::Matrix44f;
@@ -29,6 +42,7 @@ namespace example
 
 	class Scene;
 
+	/// Vertex data container that is able to render and transform in a Scene
 	class Mesh
 	{
 		private:
@@ -39,10 +53,8 @@ namespace example
 			typedef vector< Vertex >      Vertex_Buffer;
 			typedef vector< int    >      Index_Buffer;
 			typedef vector< Color  >      Vertex_Colors;
-			
-		public:
 
-			Mesh(){}
+		public:
 
 			/// Loads the given obj file path into the given position and scale with the given color
 			Mesh(const std::string & objFilePath, Translation3f position, Scaling3f scale, Color color);
@@ -51,31 +63,49 @@ namespace example
 			void Update(Scene * scene, Transformation3f parentTransform = Transformation3f());
 
 			/// Renders the Mesh with the given rasterizer
-			void Render(Scene * scene, Transformation3f parentTransform = Transformation3f());
+			void Render(Scene * scene);
 
 			/// Checks if a face is in the front
 			bool IsFrontface(const Vertex * const projected_vertices, const int * const indices);
 
-			// Mesh Data
-			Vertex_Buffer		originalVertices;
-			Index_Buffer		originalIndices;
-			Vertex_Colors		originalColors;
-			Vertex_Buffer		originalNormals;
-			Vertex_Buffer		transformedVertices;
-			Vertex_Colors		transformedColors;
-			vector< Point4i >	displayVertices;
-			Color				meshColor;
+			/// Adds a child to the children list and sets it's parent to this object
+			void AddChild(shared_ptr<Mesh> newChild)
+			{
+				newChild->meshParent = this;
+				meshesChildren.push_back(newChild);
+			}
 
-			// Transform matrices
+			// ____________________________________ Transform Matrices
 			Translation3f		translation;
 			Rotation3f			rotation_x;
 			Rotation3f			rotation_y;
 			Scaling3f			scaling;
 			Transformation3f	transformation;
 
-			// Hierarchy Data	
-			Transformation3f	meshParent;
-			vector< std::shared_ptr<Mesh> >		meshesChildren;
+	private:
+
+			// ____________________________________ Mesh Data
+			/// List of vertex positions
+			Vertex_Buffer		originalVertices;
+			/// List of indices of each triangle
+			Index_Buffer		originalIndices;
+			/// List of vertex colors
+			Vertex_Colors		originalColors;
+			/// List of vertex normals
+			Vertex_Buffer		originalNormals;
+			/// List of transformed vertex positions [AFTER TRANSFORMING]
+			Vertex_Buffer		transformedVertices;
+			/// List of transformed vertex colors	 [AFTER LIGHTING]
+			Vertex_Colors		transformedColors;
+			/// List of transformed by camera vertex positions
+			vector< Point4i >	displayVertices;
+			/// Caching the color of the mesh :)
+			Color				meshColor;
+
+			// ____________________________________ Hierarchy Data	
+			Mesh *								meshParent;
+			vector< shared_ptr<Mesh> >		meshesChildren;
+
 	};
 
 		

@@ -8,7 +8,7 @@
 #include "Rotation.hpp"
 #include "Transformation.hpp"
 
-namespace example
+namespace renderscene
 {
 	using toolkit::Projection3f;
 	using toolkit::Scaling3f;

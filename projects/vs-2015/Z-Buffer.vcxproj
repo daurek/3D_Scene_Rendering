@@ -145,8 +145,6 @@
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\Input_Stream.cpp" />
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\Output_Stream.cpp" />
     <ClCompile Include="..\..\.libraries\cpp-toolkit\sources\String.cpp" />
-    <ClCompile Include="..\..\code\Camera.cpp" />
-    <ClCompile Include="..\..\code\Light.cpp" />
     <ClCompile Include="..\..\code\main.cpp" />
     <ClCompile Include="..\..\code\Mesh.cpp" />
     <ClCompile Include="..\..\code\Scene.cpp" />
