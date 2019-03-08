@@ -9,8 +9,8 @@
 using namespace sf;
 using namespace renderscene;
 
-static const size_t window_width  = 800;
-static const size_t window_height = 600;
+static const size_t window_width  = 1600;
+static const size_t window_height = 900;
 
 int main ()
 {
@@ -57,16 +57,16 @@ int main ()
 				scene.camera->translation.add(-2, 0, 0);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-				scene.camera->translation.add(0, 0, -5);
+				scene.camera->translation.add(0, 2, 0);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-				scene.camera->translation.add(0,0, 5.f);
+				scene.camera->translation.add(0, -2, 0);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-				scene.camera->translation.add(0, 2, 0);
+				scene.getMeshesMap().at("sun")->translation.add(0, 0.01f, 0);
 	
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-				scene.camera->translation.add(0, -2, 0);
+				scene.getMeshesMap().at("sun")->translation.add(0, -0.01f, 0);
         }
 
         // Update the view:

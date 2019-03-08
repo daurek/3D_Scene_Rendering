@@ -1,3 +1,13 @@
+/// ----------------------------------------------------------------------------------------------------------------------
+/// 3D SCENE RENDERING
+/// \class renderscene::Camera
+///
+/// \author Ilyass Sofi Hlimi
+/// \date 06/03/2019
+///
+/// Contact: ilyassgame@gmail.com
+/// ----------------------------------------------------------------------------------------------------------------------
+
 #ifndef CAMERA_HEADER
 #define CAMERA_HEADER
 
@@ -5,7 +15,6 @@
 #include "Projection.hpp"
 #include "Scaling.hpp"
 #include "Translation.hpp"
-#include "Rotation.hpp"
 #include "Transformation.hpp"
 
 namespace renderscene
@@ -15,6 +24,7 @@ namespace renderscene
 	using toolkit::Translation3f;
 	using toolkit::Transformation3f;
 
+	/// Unifies Camera data with Projection frustum and Transform
 	class Camera
 	{
 	public:
@@ -29,11 +39,7 @@ namespace renderscene
 		Scaling3f			scaling;
 		Translation3f		translation;
 
-		const Transformation3f & getTransformation()
-		{
-			transformation = translation * scaling;
-			return transformation;
-		}
+		inline const Transformation3f & getTransformation() { return transformation = translation * scaling; }
 
 	private:
 

@@ -75,36 +75,49 @@ namespace renderscene
 				meshesChildren.push_back(newChild);
 			}
 
-			// ____________________________________ Transform Matrices
-			Translation3f		translation;
-			Rotation3f			rotation_x;
-			Rotation3f			rotation_y;
-			Scaling3f			scaling;
-			Transformation3f	transformation;
+			/// Used only to set an updated rotation to certain objects
+			void SetUpdatedRotation(Vertex _updatedRotation)
+			{
+				updatedRotation = baseUpdatedRotation = _updatedRotation;
+				isRotating = true;
+			}
+
+			// ____________________________________ Transformations
+			Translation3f							translation;
+			Rotation3f								rotation_x;
+			Rotation3f								rotation_y;
+			Scaling3f								scaling;
+			Transformation3f						transformation;
 
 	private:
 
 			// ____________________________________ Mesh Data
 			/// List of vertex positions
-			Vertex_Buffer		originalVertices;
+			Vertex_Buffer							originalVertices;
 			/// List of indices of each triangle
-			Index_Buffer		originalIndices;
+			Index_Buffer							originalIndices;
 			/// List of vertex colors
-			Vertex_Colors		originalColors;
+			Vertex_Colors							originalColors;
 			/// List of vertex normals
-			Vertex_Buffer		originalNormals;
+			Vertex_Buffer							originalNormals;
 			/// List of transformed vertex positions [AFTER TRANSFORMING]
-			Vertex_Buffer		transformedVertices;
+			Vertex_Buffer							transformedVertices;
 			/// List of transformed vertex colors	 [AFTER LIGHTING]
-			Vertex_Colors		transformedColors;
+			Vertex_Colors							transformedColors;
 			/// List of transformed by camera vertex positions
-			vector< Point4i >	displayVertices;
+			vector< Point4i >						displayVertices;
 			/// Caching the color of the mesh :)
-			Color				meshColor;
+			Color									meshColor;
+
 
 			// ____________________________________ Hierarchy Data	
-			Mesh *								meshParent;
-			vector< shared_ptr<Mesh> >		meshesChildren;
+			Mesh *									meshParent;
+			vector< shared_ptr<Mesh> >				meshesChildren;
+
+			// ____________________________________ Rotation Updating
+			Vertex									updatedRotation;
+			Vertex									baseUpdatedRotation;
+			bool									isRotating = false;
 
 	};
 

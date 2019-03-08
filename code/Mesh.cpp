@@ -29,11 +29,11 @@ namespace renderscene
 	Mesh::Mesh(const string & objFilePath, Translation3f position, Scaling3f scale, Color color) : translation(position), scaling(scale), meshColor(color)
 	{
 		// __________________________________________________________________ Mesh Data
-		tinyobj::attrib_t					attributes;
+		tinyobj::attrib_t				attributes;
 		vector< tinyobj::shape_t    >	shapes;
 		vector< tinyobj::material_t >	materials;
-		string warn;
-		string error;
+		string							warn;
+		string							error;
 
 		cout << "\n\n	Loading " << objFilePath << " ... \n";
 
@@ -75,14 +75,17 @@ namespace renderscene
 		cout << "	Normals: " << number_of_normals << std::endl;
 		assert(number_of_colors == number_of_vertices);
 		originalColors.resize(number_of_colors);
-		originalNormals.resize(number_of_normals);
+		originalNormals.resize(number_of_colors);
 		transformedColors.resize(originalColors.size());
 
 		// Storing vertex color and normal data into mesh 
 		for (size_t index = 0, color_counter = 0; index < number_of_colors; index++, color_counter += 3)
 		{
 			originalColors[index] = meshColor;
-			originalNormals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2], 0 });
+			if (index < number_of_normals)
+				originalNormals[index] = Vertex({ normals[color_counter + 0],normals[color_counter + 1],normals[color_counter + 2], 0 });
+			else
+				originalNormals[index] = Vertex({ 0,1,0, 0 });
 		}
 
 		// __________________________________________________________________ Indices data
@@ -106,14 +109,20 @@ namespace renderscene
 
 	void Mesh::Update(Scene * scene, Transformation3f parentTransform)
 	{
-		// TO REMOVE ______
-		static float angle = 0.f;
-		angle += 0.01f;
-
-		//rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(0.50f);
-		rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(angle);
-		// TO REMOVE ______
-
+		// Updating Rotation [Only certain objects]
+		if (isRotating)
+		{
+			if (baseUpdatedRotation[0] != 0)
+			{
+				updatedRotation[0] += baseUpdatedRotation[0];
+				rotation_x.set< Rotation3f::AROUND_THE_X_AXIS >(updatedRotation[0]);
+			}
+			if (baseUpdatedRotation[1] != 0)
+			{
+				updatedRotation[1] += baseUpdatedRotation[1];
+				rotation_y.set< Rotation3f::AROUND_THE_Y_AXIS >(updatedRotation[1]);
+			}
+		}
 
 		// Unified transform matrix
 		transformation = parentTransform * translation * rotation_x * rotation_y * scaling;

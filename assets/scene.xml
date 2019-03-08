@@ -1,35 +1,130 @@
 <?xml version="1.0"?>
 <scene>
-
 	<meshes>
-    
-    <mesh id="sphere2">
-      <path>sphere1.obj</path>
+    <mesh id="sun">
+      <path>sphere.obj</path>
+      <position>
+        <x>-1.5</x>
+        <y>1.5</y>
+        <z>-10</z>
+      </position>
+      <rotation>
+        <x>0</x>
+        <y>0</y>
+        <z>0</z>
+      </rotation>
+      <scale>
+        <x>0.02</x>
+        <y>0.02</y>
+        <z>0.02</z>
+      </scale>
+      <color>
+        <red>255</red>
+        <green>215</green>
+        <blue>0</blue>
+      </color>
+      <updatedRotation>
+        <x>0</x>
+        <y>-0.03</y>
+        <z>0</z>
+      </updatedRotation>
       <children>
-        <mesh id="sphere">
-          <path>tree04.obj</path>
+        <mesh id="orbit">
+          <path>sphere.obj</path>
           <position>
-            <x>0</x>
+            <x>10</x>
             <y>0</y>
-            <z>-2</z>
+            <z>0</z>
           </position>
           <rotation>
-            <x>0</x>
+            <x>-0.1</x>
             <y>0</y>
             <z>0</z>
           </rotation>
           <scale>
-            <x>0.05</x>
-            <y>0.05</y>
-            <z>0.05</z>
+            <x>0.5</x>
+            <y>0.5</y>
+            <z>0.5</z>
           </scale>
           <color>
-            <red>50</red>
-            <green>200</green>
-            <blue>50</blue>
+            <red>255</red>
+            <green>215</green>
+            <blue>0</blue>
           </color>
         </mesh>
       </children>
+    </mesh>
+    <mesh id="cloud1">
+      <path>clouds.obj</path>
+      <position>
+        <x>0</x>
+        <y>1</y>
+        <z>-10</z>
+      </position>
+      <rotation>
+        <x>0</x>
+        <y>-10</y>
+        <z>0</z>
+      </rotation>
+      <scale>
+        <x>0.03</x>
+        <y>0.03</y>
+        <z>0.03</z>
+      </scale>
+      <color>
+        <red>240</red>
+        <green>245</green>
+        <blue>216</blue>
+      </color>
+    </mesh>
+    <mesh id="cloud2">
+      <path>clouds.obj</path>
+      <position>
+        <x>1</x>
+        <y>1.5</y>
+        <z>-10</z>
+      </position>
+      <rotation>
+        <x>0</x>
+        <y>90</y>
+        <z>0</z>
+      </rotation>
+      <scale>
+        <x>0.01</x>
+        <y>0.01</y>
+        <z>0.01</z>
+      </scale>
+      <color>
+        <red>240</red>
+        <green>245</green>
+        <blue>216</blue>
+      </color>
+    </mesh>
+    <mesh id="cloud3">
+      <path>clouds.obj</path>
+      <position>
+        <x>2</x>
+        <y>1</y>
+        <z>-10</z>
+      </position>
+      <rotation>
+        <x>0</x>
+        <y>15</y>
+        <z>0</z>
+      </rotation>
+      <scale>
+        <x>0.01</x>
+        <y>0.01</y>
+        <z>0.01</z>
+      </scale>
+      <color>
+        <red>240</red>
+        <green>245</green>
+        <blue>216</blue>
+      </color>
+    </mesh>
+    <mesh id="terrain">
+      <path>terrain.obj</path>
       <position>
         <x>0</x>
         <y>-0.5</y>
@@ -41,16 +136,69 @@
         <z>0</z>
       </rotation>
       <scale>
-        <x>1</x>
-        <y>1</y>
-        <z>1</z>
+        <x>0.05</x>
+        <y>0.05</y>
+        <z>0.05</z>
       </scale>
       <color>
-        <red>250</red>
-        <green>200</green>
-        <blue>50</blue>
+        <red>96</red>
+        <green>128</green>
+        <blue>56</blue>
       </color>
+      <updatedRotation>
+        <x>0</x>
+        <y>0.001</y>
+        <z>0</z>
+      </updatedRotation>
+      <children>
+        <mesh id="tree1">
+          <path>tree_1.obj</path>
+          <position>
+            <x>0</x>
+            <y>0</y>
+            <z>20</z>
+          </position>
+          <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </rotation>
+          <scale>
+            <x>0.3</x>
+            <y>0.3</y>
+            <z>0.3</z>
+          </scale>
+          <color>
+            <red>201</red>
+            <green>160</green>
+            <blue>66</blue>
+          </color>
+        </mesh>
+        <mesh id="tree2">
+          <path>tree_2.obj</path>
+          <position>
+            <x>0</x>
+            <y>0</y>
+            <z>25</z>
+          </position>
+          <rotation>
+            <x>0</x>
+            <y>0</y>
+            <z>0</z>
+          </rotation>
+          <scale>
+            <x>2</x>
+            <y>2</y>
+            <z>2</z>
+          </scale>
+          <color>
+            <red>108</red>
+            <green>72</green>
+            <blue>58</blue>
+          </color>
+        </mesh>
+       
+      </children>
     </mesh>
 	</meshes>
-
 </scene>

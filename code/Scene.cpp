@@ -18,7 +18,7 @@ namespace renderscene
 		width(width), height(height), 
 		colorBuffer(width, height), 
 		rasterizer(colorBuffer, Light( Vertex({ 5, 4, 0}), { 255, 255, 0 })),
-		camera(new Camera(5, 15, 20, float(width) / float(height), { float(width / 2), float(height / 2), 0.f }, { float(width / 2), float(height / 2), 100000000.f }))
+		camera(new Camera(5, 15, 20, float(width) / float(height), { float(width / 2), float(height / 2) - 150, 0.f }, { float(width / 2), float(height / 2), 100000000.f }))
     {
 		LoadScene(scene_content_xml);
     }
@@ -86,7 +86,7 @@ namespace renderscene
 		if (path.empty())
 		{
 			std::cout << "Empty ID or path";
-			//return null;
+			return nullptr;
 		}
 
 		// Get position
@@ -135,6 +135,24 @@ namespace renderscene
 			{ red, green, blue }
 		));
 
+		// Get base rotation
+		rapidxml::xml_node<> * rotation_node = meshNode->first_node("rotation");
+
+		mesh->rotation_x.set<Rotation3f::AROUND_THE_X_AXIS>(std::stof(rotation_node->first_node("x")->value()));
+		mesh->rotation_y.set<Rotation3f::AROUND_THE_Y_AXIS>(std::stof(rotation_node->first_node("y")->value()));
+
+		// Sets updated rotation on some objects
+		rapidxml::xml_node<> * hasRotation = meshNode->first_node("updatedRotation");
+		if (hasRotation)
+		{
+			mesh->SetUpdatedRotation(
+				Vertex({ 
+					std::stof(hasRotation->first_node("x")->value()),
+					std::stof(hasRotation->first_node("y")->value()),
+					std::stof(hasRotation->first_node("z")->value())
+				}));
+		}
+		
 		// Get children node
 		rapidxml::xml_node<> * children = meshNode->first_node("children");
 		if (children)

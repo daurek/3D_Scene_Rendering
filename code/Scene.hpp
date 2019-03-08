@@ -27,7 +27,7 @@
 
 namespace renderscene
 {
-	/// Render Scene with Meshes
+	/// Renders and Updates a list of Mesh
     class Scene
     {
     private:
@@ -59,6 +59,8 @@ namespace renderscene
 
 		/// Loads the meshes node creating every Mesh
 		void LoadMeshes(rapidxml::xml_node<> * meshesNode);
+
+		const std::map< string, shared_ptr< Mesh >> & getMeshesMap() { return meshes; }
 
 		/// Returns the loaded Mesh with the given path
 		shared_ptr< Mesh > LoadMesh(rapidxml::xml_node<> * meshNode);

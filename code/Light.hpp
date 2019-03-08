@@ -16,6 +16,7 @@
 
 namespace renderscene
 {
+	/// Unifies Light Position and Color
 	class Light
 	{
 
@@ -27,9 +28,11 @@ namespace renderscene
 
 	public:
 
+		/// Creates a Light in the given position
 		Light(Vertex _position, Color _color) : position(_position), color(_color) {};
 	
-		Vertex	position;
+		Vertex				position;
+		/// Color is not being used currently
 		Color				color;
 
 	};
